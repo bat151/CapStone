@@ -1,0 +1,4 @@
+repository "CapStone/CapStone@2475118096620@cloud"
+  path "/"
+    br "/main"
+    co "/main"
