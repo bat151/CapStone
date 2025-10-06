@@ -12,10 +12,16 @@ public class Patrol : MonoBehaviour
     public float maxZ = 802f;
     public float waitTime = 2f;
 
-    private NavMeshAgent agent;
-    private float wait;             // time for how long NPC has Waited
+    // distance that the NPC will satrt chasing the player
+    public float chaseRange = 15f;
+    public Transform player;
 
-    // Start is called before the first frame update
+    private NavMeshAgent agent;
+    private float wait = 0f;
+    private bool isChasing = false;
+
+    private PlayerMovement playerMovementScript;
+
     void Start()
     {
         // Get the navmesh agent
@@ -23,26 +29,64 @@ public class Patrol : MonoBehaviour
 
         // send enemy to a random position
         RandomPosition();
-        
+
+        // get reference to player movement script
+        if (player != null)
+        {
+            playerMovementScript = player.GetComponent<PlayerMovement>();
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // check if agent has found a position
-        if(!agent.pathPending && agent.remainingDistance < 0.5f)
+        // Loop for NPC switiching between patrol and chase
+        if (player == null) return;
+
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+        if (distanceToPlayer <= chaseRange)
+        {
+            isChasing = true;
+            agent.SetDestination(player.position);
+        }
+        else if (isChasing)
+        {
+            isChasing = false;
+            RandomPosition();
+        }
+
+        if (!isChasing && !agent.pathPending && agent.remainingDistance < 0.5f)
         {
             // start wait timer
             wait += Time.deltaTime;
 
             // after waiting enough time move position
-            if(wait >= waitTime)
+            if (wait >= waitTime)
             {
                 RandomPosition();
                 wait = 0f;
             }
         }
-        
+    }
+
+    // if Npc collides with player kill player
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            KillPlayer();
+            Destroy(other.gameObject);  // Destroy the player on collision
+        }
+    }
+
+    // destroy player object
+    void KillPlayer()
+    {
+        if (playerMovementScript != null)
+        {
+            playerMovementScript.enabled = false;
+        }
+
     }
 
     void RandomPosition()
@@ -51,12 +95,12 @@ public class Patrol : MonoBehaviour
         float randomX = Random.Range(minX, maxX);
         float randomZ = Random.Range(minZ, maxZ);
 
-        // Keep the NPC at groumd level
+        // Keep the NPC at ground level
         Vector3 randomPoint = new Vector3(randomX, transform.position.y, randomZ);
 
         // make sure that the location is on the NavMesh
         NavMeshHit hit;
-        if(NavMesh.SamplePosition(randomPoint, out hit, 2f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(randomPoint, out hit, 2f, NavMesh.AllAreas))
         {
             // move agent to a valid position
             agent.SetDestination(hit.position);
