@@ -5,6 +5,7 @@ using UnityEngine;
 public class ObjectPickup : MonoBehaviour
 {
 
+    // when player collides with object destory object
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))

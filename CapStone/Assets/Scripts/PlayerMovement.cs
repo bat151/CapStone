@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float walkSpeed = 5f;
-
-    public float sprintSpeed = 9f;
-    public float maxStamina = 5f;           
-    public float staminaRegen = 2f;     
+    public float walkSpeed = 5f;    // speed while walking
+    public float sprintSpeed = 9f;  // speed while sprinting
+    public float maxStamina = 5f;   // Maximum ammount of stamina the player has           
+    public float staminaRegen = 2f; // time i takes for the stamina to regen     
     private float currentStamina;
     private bool isSprinting = false;
 
