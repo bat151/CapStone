@@ -4,29 +4,37 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float walkSpeed = 5f;    // speed while walking
-    public float sprintSpeed = 9f;  // speed while sprinting
-    public float maxStamina = 5f;   // Maximum amount of stamina the player has           
-    public float staminaRegen = 2f; // time it takes for the stamina to regen     
-    private float currentStamina;
-    private bool isSprinting = false;
+    // Movement speeds
+    public float walkSpeed = 5f;       // Speed when walking
+    public float sprintSpeed = 9f;     // Speed when sprinting
+    public float crouchSpeed = 2.5f;   // Speed when crouching
 
-    public float crouchSpeed = 2.5f;
-    private bool isCrouching = false;
+    // Stamina system
+    public float maxStamina = 5f;      // Maximum stamina player can have
+    public float staminaRegen = 2f;    // Stamina regeneration rate (per second)
+    private float currentStamina;      // Current stamina value
+    private bool canSprint = true;     // Whether the player is allowed to sprint
+    private bool isSprinting = false;  // Whether the player is currently sprinting
 
-    private float currentSpeed;
-    private CharacterController controller;
+    // Crouch
+    private bool isCrouching = false;  // Whether the player is currently crouching
 
-    private bool canSprint = true;
+    // Movement
+    private float currentSpeed;               // Current movement speed based on state
+    private CharacterController controller;   // Reference to Unity’s CharacterController
 
-    // Sprint and walk audio
+    // Footstep audio
     [Header("Footstep Audio")]
-    public AudioSource footstepAudioSource;
-    public AudioClip walkClip;
-    public AudioClip runClip;
+    public AudioSource footstepAudioSource;   // Audio source for footsteps
+    public AudioClip walkClip;                // Audio clip for walking
+    public AudioClip runClip;                 // Audio clip for sprinting
+
+    [Header("Footstep Volume")]
+    [Range(0f, 1.5f)] public float walkVolume = 0.6f; // Volume for walking clip
+    [Range(0f, 10f)] public float runVolume = 1.0f;  // Volume for running clip
 
     [Header("Footstep Settings")]
-    public float movementThreshold = 0.1f;  // How much movement counts as movement
+    public float movementThreshold = 0.1f;    // Threshold to consider the player as "moving" (currently unused)
 
     // Start is called before the first frame update
     void Start()
@@ -35,48 +43,45 @@ public class PlayerMovement : MonoBehaviour
         currentStamina = maxStamina;
         currentSpeed = walkSpeed;
 
+        // Setup footstep audio
         if (footstepAudioSource != null && walkClip != null)
         {
             footstepAudioSource.clip = walkClip;
             footstepAudioSource.loop = true;
-            footstepAudioSource.spatialBlend = 0f; // 2D
-            footstepAudioSource.volume = 1f;
-            footstepAudioSource.Play();
-            Debug.Log("Footstep audio started playing on Player!");
+            footstepAudioSource.spatialBlend = 0f; // Play in 2D
+            footstepAudioSource.volume = walkVolume;
+            footstepAudioSource.Stop(); // Wait for input before playing
+            Debug.Log("Footstep audio initialized.");
         }
         else
         {
-            Debug.LogWarning("AudioSource or walkClip not assigned on Player!");
+            Debug.LogWarning("Footstep AudioSource or walkClip is not assigned.");
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        HandleInput();
-        Movement();
-        Stamina();
-        HandleFootstepAudio();
+        HandleInput();          // Check player inputs
+        Movement();             // Move the player
+        Stamina();              // Handle stamina changes
+        HandleFootstepAudio();  // Play footsteps based on movement input
     }
 
     void Movement()
     {
-        // A and D movement
         float x = Input.GetAxis("Horizontal");
-        // W and S movement
         float z = Input.GetAxis("Vertical");
 
-        // Move in direction player is facing
         Vector3 move = transform.right * x + transform.forward * z;
         controller.Move(move * currentSpeed * Time.deltaTime);
     }
 
     void HandleInput()
     {
-        // ctrl being held to crouch
         isCrouching = Input.GetKey(KeyCode.LeftControl);
 
-        // shift being held to sprint and make sure crouch is not being used and make sure the player has stamina
+        // Check if player should sprint
         if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 0 && !isCrouching && canSprint)
         {
             isSprinting = true;
@@ -86,7 +91,7 @@ public class PlayerMovement : MonoBehaviour
             isSprinting = false;
         }
 
-        // set speed based on if walking, sprinting, or crouching
+        // Set appropriate speed
         if (isCrouching)
         {
             currentSpeed = crouchSpeed;
@@ -105,10 +110,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isSprinting)
         {
-            // lower stamina while sprinting
             currentStamina -= Time.deltaTime;
 
-            // make sure stamina can't go below 0 and if it hits zero stop sprint
             if (currentStamina <= 0f)
             {
                 currentStamina = 0f;
@@ -118,12 +121,10 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            // stamina regen
             if (currentStamina < maxStamina)
             {
                 currentStamina += staminaRegen * Time.deltaTime;
 
-                // once stamina is regenerated, allow sprint again
                 if (currentStamina >= maxStamina)
                 {
                     currentStamina = maxStamina;
@@ -135,36 +136,38 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleFootstepAudio()
     {
-        // Check if any movement input is being pressed
+        // Detect if movement keys are being pressed
         bool isMovingInput = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||
                              Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D);
 
-        // Don't play footsteps if crouching
+        // Only play sound if moving and not crouching
         if (isMovingInput && !isCrouching)
         {
-            // Determine which clip to play
+            // Select correct clip based on sprinting state
             AudioClip targetClip = isSprinting ? runClip : walkClip;
+            float targetVolume = isSprinting ? runVolume : walkVolume;
 
-            // If not already playing or switched clip, update it
+            // Switch clip or adjust volume if needed
             if (footstepAudioSource.clip != targetClip)
             {
                 footstepAudioSource.clip = targetClip;
+                footstepAudioSource.volume = targetVolume;
                 footstepAudioSource.loop = true;
                 footstepAudioSource.Play();
             }
             else if (!footstepAudioSource.isPlaying)
             {
+                footstepAudioSource.volume = targetVolume;
                 footstepAudioSource.Play();
             }
         }
         else
         {
-            // Stop footstep sounds when no input or crouching
+            // Stop audio if no input or crouching
             if (footstepAudioSource.isPlaying)
             {
                 footstepAudioSource.Stop();
             }
         }
     }
-
 }
