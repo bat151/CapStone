@@ -27,13 +27,14 @@ public class ObjectSpawner : MonoBehaviour
 
     void SpawnObjectAtRandomPoint(GameObject objPrefab, Transform[] spawnPoints)
     {
+        // make sure one spawn point is choose for each object
         if (spawnPoints.Length == 0)
         {
             Debug.LogWarning($"No spawn points assigned for {objPrefab.name}");
             return;
         }
 
-        // Choose a random spawn point from the array
+        // Choose a random spawn point from the list
         Transform randomSpawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
 
         // Make sure it's on the NavMesh
