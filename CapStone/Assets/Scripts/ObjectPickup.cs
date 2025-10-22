@@ -10,7 +10,7 @@ public class ObjectPickup : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Destroy(gameObject);
+            Destroy(transform.root.gameObject);
         }
     }
     // Start is called before the first frame update
