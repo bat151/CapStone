@@ -10,6 +10,10 @@ public class ObjectPickup : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            // Tell the GameManager that this item was picked up
+            if (GameManager.Instance != null)
+                GameManager.Instance.AddCollectible();
+
             Destroy(transform.root.gameObject);
         }
     }
