@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     // Stamina system
     public float maxStamina = 5f;      // Maximum stamina player can have
     public float staminaRegen = 2f;    // Stamina regeneration rate (per second)
-    private float currentStamina;      // Current stamina value
+    public float currentStamina;      // Current stamina value
     private bool canSprint = true;     // Whether the player is allowed to sprint
     private bool isSprinting = false;  // Whether the player is currently sprinting
 
@@ -170,4 +170,21 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+
+    // Collision detection for escape object
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject == GameManager.Instance.escapeObject)
+        {
+            Debug.Log("Player reached the escape object!");
+            GameManager.Instance.WinGame();
+        }
+    }
+
+    public float CurrentStaminaNormalized()
+    {
+        return currentStamina / maxStamina;
+    }
+
+
 }

@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -9,6 +11,10 @@ public class GameManager : MonoBehaviour
     public int totalCollectibles = 3;  // Number of collectibles needed
 
     private int collectedCount = 0;
+
+    [Header("Scene Names")]
+    public string winSceneName = "Win";
+    public string loseSceneName = "Lose";
 
     private void Awake()
     {
@@ -37,4 +43,23 @@ public class GameManager : MonoBehaviour
         if (escapeObject != null)
             escapeObject.SetActive(true);
     }
+
+    public void WinGame()
+    {
+        // Unlock and show cursor
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        SceneManager.LoadScene(winSceneName);
+    }
+
+    public void LoseGame()
+    {
+        // Unlock and show cursor
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        SceneManager.LoadScene(loseSceneName);
+    }
+
 }
