@@ -10,11 +10,13 @@ public class GameManager : MonoBehaviour
     public GameObject escapeObject;    // The object to show when all are collected
     public int totalCollectibles = 3;  // Number of collectibles needed
 
-    private int collectedCount = 0;
+    public int collectedCount = 0;
 
     [Header("Scene Names")]
     public string winSceneName = "Win";
     public string loseSceneName = "Lose";
+
+    public CollectiblesUI collectiblesUI; // assign in Inspector
 
     private void Awake()
     {
@@ -33,6 +35,9 @@ public class GameManager : MonoBehaviour
         collectedCount++;
         Debug.Log($"Collected {collectedCount}/{totalCollectibles}");
 
+        if (collectiblesUI != null)
+            collectiblesUI.UpdateText();
+
         if (collectedCount >= totalCollectibles)
             UnlockEscape();
     }
@@ -42,6 +47,10 @@ public class GameManager : MonoBehaviour
         Debug.Log("All items collected! Escape object revealed!");
         if (escapeObject != null)
             escapeObject.SetActive(true);
+
+        // Update UI to show "Go to the Escape!"
+        if (collectiblesUI != null)
+            collectiblesUI.UpdateText();
     }
 
     public void WinGame()
