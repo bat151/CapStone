@@ -6,8 +6,8 @@ using UnityEngine.AI;
 public class Patrol : MonoBehaviour
 {
     // Patrol area limits and wait time
-    public float minX = 203f;
-    public float maxX = 802f;
+    public float minX = 204f;
+    public float maxX = 801f;
     public float minZ = 195f;
     public float maxZ = 802f;
     public float waitTime = 2f;
