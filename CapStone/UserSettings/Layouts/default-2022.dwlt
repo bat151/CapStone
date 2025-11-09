@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1706.6667
     height: 869.3334
   m_ShowMode: 4
-  m_Title: Inspector
+  m_Title: Game
   m_RootView: {fileID: 6}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 56
+  controlID: 125
 --- !u!114 &3
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -224,7 +224,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 57
+  controlID: 62
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -249,7 +249,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 58
+  controlID: 63
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -392,7 +392,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts
+    - Assets/YughuesFreeBushes2018/Prefabs
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -400,16 +400,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts
+  - Assets/YughuesFreeBushes2018/Prefabs
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\HP\Desktop\git hub files\CapStone\CapStone
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 11.0000305}
-    m_SelectedIDs: 0e860000
-    m_LastClickedID: 34318
-    m_ExpandedIDs: 00000000de850000e0850000e2850000e4850000e6850000e8850000ea850000ec850000fe8500001a86000000ca9a3b
+    scrollPos: {x: 0, y: 507.00003}
+    m_SelectedIDs: 64c50000
+    m_LastClickedID: 50532
+    m_ExpandedIDs: 0000000048a200004aa200004ca200004ea2000050a2000052a2000054a2000056a200007aa200008aa200008ca2000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -437,7 +437,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000de850000e0850000e2850000e4850000e6850000e8850000ea850000ec850000
+    m_ExpandedIDs: 0000000048a200004aa200004ca200004ea2000050a2000052a2000054a2000056a20000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -577,9 +577,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 6ae5fdff
-      m_LastClickedID: -137878
-      m_ExpandedIDs: ecf5fdff8c03feff320afeff665efeff4a6ffefff072feff1880feffc280feff2083feff6483feffaa83feffb085fefff485feff4086feff1c99feffaaa4feffbca7feffa2aafefffaaafeff9abefefffcc0feff54c1feffeefaffffb2a3000004a90000a4b40000b4b4000026b500003eb50000a0bd0000ce290100422c0100
+      m_SelectedIDs: 244fffff
+      m_LastClickedID: -45276
+      m_ExpandedIDs: 3ea4ffff10a7ffffeefaffffc6a20000d0a20000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1050,9 +1050,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 465.58936, y: -36.698563, z: 492.74097}
+    m_Target: {x: 484.90997, y: 1.8400002, z: 204.45}
     speed: 2
-    m_Value: {x: 465.58936, y: -36.698563, z: 492.74097}
+    m_Value: {x: 484.90997, y: 1.8400002, z: 204.45}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1098,13 +1098,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.020664642, y: 0.9719924, z: -0.21512327, w: -0.093387835}
+    m_Target: {x: -0.34047502, y: -0.6237941, z: 0.34725162, w: -0.61204505}
     speed: 2
-    m_Value: {x: -0.021204991, y: 0.9677064, z: -0.23559469, w: -0.08711978}
+    m_Value: {x: -0.34043673, y: -0.62372386, z: 0.34721255, w: -0.6119762}
   m_Size:
-    m_Target: 323.2528
+    m_Target: 12.124355
     speed: 2
-    m_Value: 323.2528
+    m_Value: 12.124355
   m_Ortho:
     m_Target: 0
     speed: 2
