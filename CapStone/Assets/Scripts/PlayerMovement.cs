@@ -5,36 +5,41 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     // Movement speeds
-    public float walkSpeed = 5f;       // Speed when walking
-    public float sprintSpeed = 9f;     // Speed when sprinting
-    public float crouchSpeed = 2.5f;   // Speed when crouching
+    public float walkSpeed = 5f;       
+    public float sprintSpeed = 9f;     
+    public float crouchSpeed = 2.5f;  
 
     // Stamina system
-    public float maxStamina = 5f;      // Maximum stamina player can have
-    public float staminaRegen = 2f;    // Stamina regeneration rate (per second)
-    public float currentStamina;      // Current stamina value
-    private bool canSprint = true;     // Whether the player is allowed to sprint
-    private bool isSprinting = false;  // Whether the player is currently sprinting
+    public float maxStamina = 5f;      
+    public float staminaRegen = 2f;    
+    public float currentStamina;      
+    private bool canSprint = true;     
+    private bool isSprinting = false;  
 
     // Crouch
-    private bool isCrouching = false;  // Whether the player is currently crouching
+    private bool isCrouching = false;  
 
     // Movement
-    private float currentSpeed;               // Current movement speed based on state
-    private CharacterController controller;   // Reference to Unity’s CharacterController
+    private float currentSpeed;               
+    private CharacterController controller;   
 
     // Footstep audio
     [Header("Footstep Audio")]
-    public AudioSource footstepAudioSource;   // Audio source for footsteps
-    public AudioClip walkClip;                // Audio clip for walking
-    public AudioClip runClip;                 // Audio clip for sprinting
+    public AudioSource footstepAudioSource;   
+    public AudioClip walkClip;                
+    public AudioClip runClip;                 
 
     [Header("Footstep Volume")]
-    [Range(0f, 1.5f)] public float walkVolume = 0.6f; // Volume for walking clip
-    [Range(0f, 10f)] public float runVolume = 1.0f;  // Volume for running clip
+    [Range(0f, 1.5f)] public float walkVolume = 0.6f; 
+    [Range(0f, 10f)] public float runVolume = 1.0f;  
 
     [Header("Footstep Settings")]
-    public float movementThreshold = 0.1f;    // Threshold to consider the player as "moving" (currently unused)
+    public float movementThreshold = 0.1f;
+
+    // Range settings (how far and loud the sound plays to be picked up)
+    [Header("Range Settings")]
+    public float WalkSoundRange = 5f;
+    public float SprintSoundRange = 10f;
 
     // Start is called before the first frame update
     void Start()
@@ -160,6 +165,10 @@ public class PlayerMovement : MonoBehaviour
                 footstepAudioSource.volume = targetVolume;
                 footstepAudioSource.Play();
             }
+
+            // Broadcast the sound to the enemy AI
+            float loudness = isSprinting ? SprintSoundRange : WalkSoundRange;
+            SoundEventManager.BroadcastSound(transform.position, loudness);
         }
         else
         {

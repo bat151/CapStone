@@ -112,4 +112,27 @@ public class Patrol : MonoBehaviour
             agent.SetDestination(hit.position);
         }
     }
+
+    void HearSound(Vector3 soundPosition, float loudness)
+    {
+        float DistanceToSound = Vector3.Distance(transform.position, soundPosition);
+        Debug.Log($"Enemy heard sound! Distance: {DistanceToSound}, Loudness: {loudness}");
+
+        if (DistanceToSound <= loudness)
+        {
+            // chase player
+            isChasing = true;
+            agent.SetDestination(player.position);
+        }
+    }
+
+    void OnEnable()
+    {
+        SoundEventManager.OnSoundMade += HearSound;
+    }
+
+    void OnDisable()
+    {
+        SoundEventManager.OnSoundMade -= HearSound;
+    }
 }
