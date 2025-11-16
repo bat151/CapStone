@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class CollectiblesUI : MonoBehaviour
 {
-    public GameManager gameManager; // Reference to your GameManager
+    public GameManager gameManager; 
     public Text collectiblesText;
 
     private void Start()
