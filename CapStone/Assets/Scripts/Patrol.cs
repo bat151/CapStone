@@ -76,7 +76,7 @@ public class Patrol : MonoBehaviour
         {
             KillPlayer();
 
-            // 🧩 ADD THIS — tell GameManager to trigger Lose Scene
+            // Load Lose scene 
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.LoseGame();
