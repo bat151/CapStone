@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.Networking;
 using System;
 
@@ -86,7 +87,7 @@ public class Timer : MonoBehaviour
 
         Debug.Log("Sending JSON: " + jsonData);
 
-        // build the POST request
+        // build the POST request and covert data to bytes
         UnityWebRequest request = new UnityWebRequest(apiUrlSubmit, "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
