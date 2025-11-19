@@ -31708,9 +31708,9 @@ MonoBehaviour:
   escapeObject: {fileID: 1311534228}
   totalCollectibles: 3
   collectedCount: 0
+  timer: {fileID: 651818736}
   winSceneName: Win
   loseSceneName: Lose
-  collectiblesUI: {fileID: 0}
 --- !u!1001 &652345345
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -64542,7 +64542,7 @@ Transform:
   m_GameObject: {fileID: 1311534228}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 620.566, y: 3.7, z: 115.3}
+  m_LocalPosition: {x: 620.566, y: 3.7, z: 263}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []

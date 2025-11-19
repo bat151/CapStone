@@ -6,62 +6,64 @@ using System;
 
 public class Timer : MonoBehaviour
 {
-    // UI Element to display the timer
+    public static Timer Instance;
+
+    [Header("UI Element")]
     public TextMeshProUGUI timerText;
 
-    // How much time has passed and flag for if timer is running
     private float elapsedTime = 0f;
     private bool isRunning = true;
 
-    // Backend API URL for submitting scores
     private string apiUrlSubmit = "http://localhost:3000/submit";
 
-    // Called once per frame
-    void Update()
+    private void Awake()
+    {
+        // Singleton pattern
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void Update()
     {
         if (!isRunning) return;
 
         elapsedTime += Time.deltaTime;
 
-        // Calculate minutes and seconds from the elapsed time
         int minutes = Mathf.FloorToInt(elapsedTime / 60f);
         int seconds = Mathf.FloorToInt(elapsedTime % 60f);
 
-        // Update the text component
-        timerText.text = $"{minutes:00}:{seconds:00}";
+        if (timerText != null)
+            timerText.text = $"{minutes:00}:{seconds:00}";
     }
 
-    // Method to stop the timer
-    public void StopTimer()
+    public void StopTimerWithoutSending()
     {
         isRunning = false;
-
-        float finalTime = GetElapsedTime();
-        string playerID = "Player1"; // Replace with actual player ID if you have it
-
-        // Send the score
-        StartCoroutine(SendBestTime(playerID, finalTime));
+        Debug.Log("Timer stopped at: " + elapsedTime);
     }
 
-    // Method to start timer
-    public void StartTimer()
-    {
-        isRunning = true;
-        elapsedTime = 0f; // Reset timer when starting
-    }
-
-    // Method to retrieve elapsed time in seconds
     public float GetElapsedTime()
     {
         return elapsedTime;
     }
 
-    // Coroutine to send best time to backend
+    public void SubmitBestTime(string playerID)
+    {
+        float finalTime = GetElapsedTime();
+        StartCoroutine(SendBestTime(playerID, finalTime));
+    }
+
     private IEnumerator SendBestTime(string playerID, float bestTime)
     {
         string dateAchieved = DateTime.Now.ToString("yyyy-MM-dd");
 
-        // Create JSON payload
         string jsonData = JsonUtility.ToJson(new ScoreData
         {
             playerID = playerID,
@@ -69,7 +71,6 @@ public class Timer : MonoBehaviour
             dateAchieved = dateAchieved
         });
 
-        // Debug to see what JSON is being sent
         Debug.Log("Sending JSON: " + jsonData);
 
         UnityWebRequest request = new UnityWebRequest(apiUrlSubmit, "POST");
@@ -81,14 +82,9 @@ public class Timer : MonoBehaviour
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
-
-        {
             Debug.Log("Score submitted successfully!");
-        }
         else
-        {
             Debug.LogError("Error submitting score: " + request.error);
-        }
     }
 
     [Serializable]
