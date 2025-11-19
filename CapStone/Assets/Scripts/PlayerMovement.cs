@@ -24,26 +24,25 @@ public class PlayerMovement : MonoBehaviour
     private CharacterController controller;   
 
     // Footstep audio
-    [Header("Footstep Audio")]
     public AudioSource footstepAudioSource;   
     public AudioClip walkClip;                
     public AudioClip runClip;                 
 
-    [Header("Footstep Volume")]
+    // range for sounds used for the AI tracking
     [Range(0f, 1.5f)] public float walkVolume = 0.6f; 
     [Range(0f, 10f)] public float runVolume = 1.0f;  
 
-    [Header("Footstep Settings")]
+    // minimum input to count as movement
     public float movementThreshold = 0.1f;
 
-    // Range settings (how far and loud the sound plays to be picked up)
-    [Header("Range Settings")]
+    // Range settings (how far and loud the sound plays to be picked up 
     public float WalkSoundRange = 5f;
     public float SprintSoundRange = 10f;
 
     // Start is called before the first frame update
     void Start()
     {
+        // get charecter controller and initialize stamina and speed
         controller = GetComponent<CharacterController>();
         currentStamina = maxStamina;
         currentSpeed = walkSpeed;
@@ -51,8 +50,8 @@ public class PlayerMovement : MonoBehaviour
         // Setup footstep audio
         if (footstepAudioSource != null && walkClip != null)
         {
-            footstepAudioSource.clip = walkClip;
-            footstepAudioSource.loop = true;
+            footstepAudioSource.clip = walkClip; // set the walk sound
+            footstepAudioSource.loop = true; // loop the sound
             footstepAudioSource.spatialBlend = 0f; // Play in 2D
             footstepAudioSource.volume = walkVolume;
             footstepAudioSource.Stop(); // Wait for input before playing
@@ -75,18 +74,21 @@ public class PlayerMovement : MonoBehaviour
 
     void Movement()
     {
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
+        float x = Input.GetAxis("Horizontal"); // A/D left right movement
+        float z = Input.GetAxis("Vertical"); // W/S up down movement
 
+        // convert input and move the charecter
         Vector3 move = transform.right * x + transform.forward * z;
         controller.Move(move * currentSpeed * Time.deltaTime);
     }
 
+    // handle player input for crouch and sprint
     void HandleInput()
     {
+        // hold ctrl to crouch
         isCrouching = Input.GetKey(KeyCode.LeftControl);
 
-        // Check if player should sprint
+        // Check if player should sprint, if they have stamina and are not crouching
         if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 0 && !isCrouching && canSprint)
         {
             isSprinting = true;
@@ -96,7 +98,7 @@ public class PlayerMovement : MonoBehaviour
             isSprinting = false;
         }
 
-        // Set appropriate speed
+        // Set appropriate speed depending on what input
         if (isCrouching)
         {
             currentSpeed = crouchSpeed;
@@ -111,8 +113,10 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // update stamina depending on what movement
     void Stamina()
     {
+        // decrease stamian while sprinting
         if (isSprinting)
         {
             currentStamina -= Time.deltaTime;
@@ -120,10 +124,11 @@ public class PlayerMovement : MonoBehaviour
             if (currentStamina <= 0f)
             {
                 currentStamina = 0f;
-                canSprint = false;
-                isSprinting = false;
+                canSprint = false; // cant sprint
+                isSprinting = false; // stop sprint
             }
         }
+        // regen stamina when not sprinting
         else
         {
             if (currentStamina < maxStamina)
@@ -133,26 +138,27 @@ public class PlayerMovement : MonoBehaviour
                 if (currentStamina >= maxStamina)
                 {
                     currentStamina = maxStamina;
-                    canSprint = true;
+                    canSprint = true; // let player sprint again
                 }
             }
         }
     }
 
+    // handle footstep audio and broadcast the sound to the enemy "AI sound Tracking"
     void HandleFootstepAudio()
     {
-        // Detect if movement keys are being pressed
+        // detect if movement keys are being pressed
         bool isMovingInput = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||
                              Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D);
 
-        // Only play sound if moving and not crouching
+        // only play sound if moving and not crouching
         if (isMovingInput && !isCrouching)
         {
-            // Select correct clip based on sprinting state
+            // select correct clip based on sprinting state
             AudioClip targetClip = isSprinting ? runClip : walkClip;
             float targetVolume = isSprinting ? runVolume : walkVolume;
 
-            // Switch clip or adjust volume if needed
+            // switch clip or adjust volume if needed
             if (footstepAudioSource.clip != targetClip)
             {
                 footstepAudioSource.clip = targetClip;
@@ -166,7 +172,7 @@ public class PlayerMovement : MonoBehaviour
                 footstepAudioSource.Play();
             }
 
-            // Broadcast the sound to the enemy AI
+            // broadcast the sound to the enemy AI
             float loudness = isSprinting ? SprintSoundRange : WalkSoundRange;
             SoundEventManager.BroadcastSound(transform.position, loudness);
         }
@@ -190,6 +196,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // return stamina, used for the UI
     public float CurrentStaminaNormalized()
     {
         return currentStamina / maxStamina;

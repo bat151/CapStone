@@ -4,27 +4,31 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    [Header("Scene Names")]
+    // name of the scene that will load
     public string gameSceneName = "Level";
 
-    public Button startButton; // assign in Inspector
-    public Button quitButton;  // assign in Inspector
+    // Buttons for starting the game and closing the game
+    public Button startButton; 
+    public Button quitButton;  
 
     private void Start()
     {
-        // Add listeners in code
+        // listener for the start button
         if (startButton != null)
             startButton.onClick.AddListener(StartGame);
 
+        // listner for the quit button
         if (quitButton != null)
             quitButton.onClick.AddListener(QuitGame);
     }
 
+    // method to load the level when start is clciked
     public void StartGame()
     {
         SceneManager.LoadScene(gameSceneName);
     }
 
+    // close the game 
     public void QuitGame()
     {
         Debug.Log("Quit pressed — closing game.");
