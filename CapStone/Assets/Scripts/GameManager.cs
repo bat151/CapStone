@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
     public string winSceneName = "Win";
     public string loseSceneName = "Lose";
 
+    public Timer timer;
+
     public CollectiblesUI collectiblesUI; // assign in Inspector
 
     private void Awake()
@@ -55,6 +57,17 @@ public class GameManager : MonoBehaviour
 
     public void WinGame()
     {
+
+        // Stop the timer and send the score
+        if (timer != null)
+        {
+            timer.StopTimer();
+        }
+        else
+        {
+            Debug.LogError("Timer reference is missing in GameManager!");
+        }
+
         // Unlock and show cursor
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
