@@ -17,7 +17,12 @@ public class Timer : MonoBehaviour
     private bool isRunning = true; // is the timer running
 
     // URL for the backend of my website where the best time and date will be sent
-    private string apiUrlSubmit = "https://localhost:3000/submit";
+    private string apiUrlSubmit = "http://localhost:3000/submit";
+
+    // secure session API + storage
+    private string apiStartSession = "http://localhost:3000/start-session"; 
+    private string sessionId;    
+    private string sessionToken; 
 
     private void Awake()
     {
@@ -33,6 +38,12 @@ public class Timer : MonoBehaviour
             // if their is a timer in another scene delete it
             Destroy(gameObject);
         }
+    }
+
+    private void Start()
+    {
+        // ask server for a secure session + token
+        StartCoroutine(StartSession());
     }
 
     private void Update()
@@ -68,50 +79,76 @@ public class Timer : MonoBehaviour
     // method to submit the time that the player had at the end of the level
     public void SubmitBestTime(string playerID)
     {
-        float finalTime = GetElapsedTime();
-        StartCoroutine(SendBestTime(playerID, finalTime));
+        // now sends secure token instead of bestTime
+        StartCoroutine(SendSecureSubmission(playerID));
     }
 
-    // coroutine to send both the final timer and date to backend API
-    private IEnumerator SendBestTime(string playerID, float bestTime)
+    // request secure session from backend
+    private IEnumerator StartSession()
     {
-        string dateAchieved = DateTime.Now.ToString("yyyy-MM-dd");
+        UnityWebRequest req = UnityWebRequest.Get(apiStartSession);
+        yield return req.SendWebRequest();
 
-        // convert the data to JSON
-        string jsonData = JsonUtility.ToJson(new ScoreData
+        if (req.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("Failed to start session: " + req.error);
+        }
+        else
+        {
+            Debug.Log("Session response: " + req.downloadHandler.text);
+
+            SessionResponse resp = JsonUtility.FromJson<SessionResponse>(req.downloadHandler.text);
+
+            sessionId = resp.sessionId;
+            sessionToken = resp.token;
+
+            Debug.Log("Stored secure token: " + sessionToken);
+        }
+    }
+
+    // submit secure token (no bestTime from client)
+    private IEnumerator SendSecureSubmission(string playerID)
+    {
+        var payload = new SecureSubmitData
         {
             playerID = playerID,
-            bestTime = bestTime,
-            dateAchieved = dateAchieved
-        });
+            sessionId = sessionId,
+            token = sessionToken
+        };
 
-        Debug.Log("Sending JSON: " + jsonData);
+        string jsonData = JsonUtility.ToJson(payload);
+        Debug.Log("Sending secure JSON: " + jsonData);
 
-        // build the POST request and covert data to bytes
         UnityWebRequest request = new UnityWebRequest(apiUrlSubmit, "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
+
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
-
-        // let the backend know JSON data is being sent
         request.SetRequestHeader("Content-Type", "application/json");
 
-        // send the request 
         yield return request.SendWebRequest();
 
-        // debug to make sure that data was sent succsefully
         if (request.result == UnityWebRequest.Result.Success)
             Debug.Log("Score submitted successfully!");
         else
             Debug.LogError("Error submitting score: " + request.error);
     }
 
-    // structure of the JSON being sent
+    // secure token structures
     [Serializable]
-    private class ScoreData
+    private class SessionResponse
+    {
+        public string sessionId;
+        public string token;
+        public long startTime;
+    }
+
+    [Serializable]
+    private class SecureSubmitData
     {
         public string playerID;
-        public float bestTime;
-        public string dateAchieved;
+        public string sessionId;
+        public string token;
     }
+
 }
