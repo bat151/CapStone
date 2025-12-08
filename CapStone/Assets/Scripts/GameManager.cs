@@ -6,27 +6,27 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    // game object and how many collectibles and if theyve been picked up
+    // Game object and how many collectibles and if theyve been picked up
     public GameObject escapeObject;
     public int totalCollectibles = 3;
     public int collectedCount = 0;
 
-    // reference to the timer script
+    // Reference to the timer script
     public Timer timer;
 
-    // scene names 
+    // Scene names 
     public string winSceneName = "Win";
     public string loseSceneName = "Lose";
 
     private void Awake()
     {
-        // for the timer to carry over through scenes
+        // For the timer to carry over through scenes
         if (Instance == null)
             Instance = this;
         else
             Destroy(gameObject);
 
-        // hide the escape object
+        // Hide the escape object
         if (escapeObject != null)
             escapeObject.SetActive(false);
     }
@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
         collectedCount++;
         Debug.Log($"Collected {collectedCount}/{totalCollectibles}");
 
-        // once all collectibles are found open the escape
+        // Once all collectibles are found open the escape
         if (collectedCount >= totalCollectibles)
             UnlockEscape();
     }
@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
             escapeObject.SetActive(true);
     }
 
-    // when player makes it to the escape end game
+    // When player makes it to the escape end game
     public void WinGame()
     {
         // Stop timer but do NOT send JSON yet
@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    // when player loses send them to the lose screen
+    // When player loses send them to the lose screen
     public void LoseGame()
     {
         Cursor.lockState = CursorLockMode.None;

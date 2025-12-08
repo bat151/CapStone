@@ -28,21 +28,21 @@ public class PlayerMovement : MonoBehaviour
     public AudioClip walkClip;                
     public AudioClip runClip;                 
 
-    // range for sounds used for the AI tracking
+    // Range for sounds used for the AI tracking
     [Range(0f, 1.5f)] public float walkVolume = 0.6f; 
     [Range(0f, 10f)] public float runVolume = 1.0f;  
 
-    // minimum input to count as movement
+    // Minimum input to count as movement
     public float movementThreshold = 0.1f;
 
-    // Range settings (how far and loud the sound plays to be picked up 
+    // Range settings, how far and loud the sound plays to be picked up 
     public float WalkSoundRange = 5f;
     public float SprintSoundRange = 10f;
 
     // Start is called before the first frame update
     void Start()
     {
-        // get charecter controller and initialize stamina and speed
+        // Get charecter controller and initialize stamina and speed
         controller = GetComponent<CharacterController>();
         currentStamina = maxStamina;
         currentSpeed = walkSpeed;
@@ -77,15 +77,15 @@ public class PlayerMovement : MonoBehaviour
         float x = Input.GetAxis("Horizontal"); // A/D left right movement
         float z = Input.GetAxis("Vertical"); // W/S up down movement
 
-        // convert input and move the charecter
+        // Convert input and move the charecter
         Vector3 move = transform.right * x + transform.forward * z;
         controller.Move(move * currentSpeed * Time.deltaTime);
     }
 
-    // handle player input for crouch and sprint
+    // Handle player input for crouch and sprint
     void HandleInput()
     {
-        // hold ctrl to crouch
+        // Hold ctrl to crouch
         isCrouching = Input.GetKey(KeyCode.LeftControl);
 
         // Check if player should sprint, if they have stamina and are not crouching
@@ -113,10 +113,10 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // update stamina depending on what movement
+    // Update stamina depending on what movement
     void Stamina()
     {
-        // decrease stamian while sprinting
+        // Decrease stamian while sprinting
         if (isSprinting)
         {
             currentStamina -= Time.deltaTime;
@@ -124,11 +124,11 @@ public class PlayerMovement : MonoBehaviour
             if (currentStamina <= 0f)
             {
                 currentStamina = 0f;
-                canSprint = false; // cant sprint
-                isSprinting = false; // stop sprint
+                canSprint = false; // Cant sprint
+                isSprinting = false; // Stop sprint
             }
         }
-        // regen stamina when not sprinting
+        // Regen stamina when not sprinting
         else
         {
             if (currentStamina < maxStamina)
@@ -138,27 +138,27 @@ public class PlayerMovement : MonoBehaviour
                 if (currentStamina >= maxStamina)
                 {
                     currentStamina = maxStamina;
-                    canSprint = true; // let player sprint again
+                    canSprint = true; // Let player sprint again
                 }
             }
         }
     }
 
-    // handle footstep audio and broadcast the sound to the enemy "AI sound Tracking"
+    // Handle footstep audio and broadcast the sound to the enemy "AI sound Tracking"
     void HandleFootstepAudio()
     {
-        // detect if movement keys are being pressed
+        // Detect if movement keys are being pressed
         bool isMovingInput = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||
                              Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D);
 
-        // only play sound if moving and not crouching
+        // Only play sound if moving and not crouching
         if (isMovingInput && !isCrouching)
         {
-            // select correct clip based on sprinting state
+            // Select correct clip based on sprinting state
             AudioClip targetClip = isSprinting ? runClip : walkClip;
             float targetVolume = isSprinting ? runVolume : walkVolume;
 
-            // switch clip or adjust volume if needed
+            // Switch clip or adjust volume if needed
             if (footstepAudioSource.clip != targetClip)
             {
                 footstepAudioSource.clip = targetClip;
@@ -172,7 +172,7 @@ public class PlayerMovement : MonoBehaviour
                 footstepAudioSource.Play();
             }
 
-            // broadcast the sound to the enemy AI
+            // Broadcast the sound to the enemy AI
             float loudness = isSprinting ? SprintSoundRange : WalkSoundRange;
             SoundEventManager.BroadcastSound(transform.position, loudness);
         }
@@ -196,7 +196,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // return stamina, used for the UI
+    // Return stamina, used for the UI
     public float CurrentStaminaNormalized()
     {
         return currentStamina / maxStamina;

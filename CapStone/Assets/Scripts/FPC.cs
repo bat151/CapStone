@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class FPC : MonoBehaviour
 {
-
-    public Transform playerBody; // reference to the player 
-    public float mouseSens = 100f; // mouse sensitivity
-    float xRotation = 0f; // camera rotation
+    // Player reference, mous sensetivity, and camera rotation
+    public Transform playerBody; 
+    public float mouseSens = 100f; 
+    float xRotation = 0f; 
 
     // Start is called before the first frame update
     void Start()

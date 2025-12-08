@@ -13,13 +13,14 @@ public class Timer : MonoBehaviour
     // UI element, display minutes and seconds
     public TextMeshProUGUI timerText;
 
-    private float elapsedTime = 0f; // how long the timer has been running
-    private bool isRunning = true; // is the timer running
+    // How long the timer has been running and check if it is running
+    private float elapsedTime = 0f; 
+    private bool isRunning = true; 
 
     // URL for the backend of my website where the best time and date will be sent
     private string apiUrlSubmit = "http://localhost:3000/submit";
 
-    // secure session API + storage
+    // Secure session API + storage
     private string apiStartSession = "http://localhost:3000/start-session"; 
     private string sessionId;    
     private string sessionToken; 
@@ -29,61 +30,61 @@ public class Timer : MonoBehaviour
         // Singleton pattern to make sure timer persist through scenes, used to help with win screen send data
         if (Instance == null)
         {
-            // make sure timer doesnt destroy through scenes
+            // Make sure timer doesnt destroy through scenes
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
         else
         {
-            // if their is a timer in another scene delete it
+            // If their is a timer in another scene delete it
             Destroy(gameObject);
         }
     }
 
     private void Start()
     {
-        // ask server for a secure session + token
+        // Ask server for a secure session + token
         StartCoroutine(StartSession());
     }
 
     private void Update()
     {
-        // only count time when main level is running
+        // Only count time when main level is running
         if (!isRunning) return;
 
-        // up the time
+        // Up the time
         elapsedTime += Time.deltaTime;
 
-        // make sure time shows up as minutes and seconds
+        // Make sure time shows up as minutes and seconds
         int minutes = Mathf.FloorToInt(elapsedTime / 60f);
         int seconds = Mathf.FloorToInt(elapsedTime % 60f);
 
-        // update the timer UI
+        // Update the timer UI
         if (timerText != null)
             timerText.text = $"{minutes:00}:{seconds:00}";
     }
 
-    // stops the timer when player escapes but doesnt send JSON data yet
+    // Stops the timer when player escapes but doesnt send JSON data yet
     public void StopTimerWithoutSending()
     {
         isRunning = false;
         Debug.Log("Timer stopped at: " + elapsedTime);
     }
 
-    // get the elasped time
+    // Get the elasped time
     public float GetElapsedTime()
     {
         return elapsedTime;
     }
 
-    // method to submit the time that the player had at the end of the level
+    // Method to submit the time that the player had at the end of the level
     public void SubmitBestTime(string playerID)
     {
-        // now sends secure token instead of bestTime
+        // Now sends secure token instead of bestTime
         StartCoroutine(SendSecureSubmission(playerID));
     }
 
-    // request secure session from backend
+    // Request secure session from backend
     private IEnumerator StartSession()
     {
         UnityWebRequest req = UnityWebRequest.Get(apiStartSession);
@@ -106,7 +107,7 @@ public class Timer : MonoBehaviour
         }
     }
 
-    // submit secure token (no bestTime from client)
+    // Submit secure token
     private IEnumerator SendSecureSubmission(string playerID)
     {
         var payload = new SecureSubmitData
@@ -134,7 +135,7 @@ public class Timer : MonoBehaviour
             Debug.LogError("Error submitting score: " + request.error);
     }
 
-    // secure token structures
+    // Secure token structures
     [Serializable]
     private class SessionResponse
     {

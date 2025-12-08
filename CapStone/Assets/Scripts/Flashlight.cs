@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Flashlight : MonoBehaviour
 {
-    //Make sure the flashlight is off
+    // Make sure the flashlight is off
     public Light flashlight;
     private bool isOn = false;
 
-    // audio for flashlight
+    // Audio for flashlight
     public AudioClip togglesound;
     private AudioSource audioSource;
 
@@ -28,7 +28,7 @@ public class Flashlight : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // when Left mosue is clicked turn on and off flashlight
+        // When Left mosue is clicked turn on and off flashlight
         if (Input.GetMouseButtonDown(0))
         {
             ToggleFlashlight();

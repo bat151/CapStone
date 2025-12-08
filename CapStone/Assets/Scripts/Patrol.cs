@@ -16,14 +16,15 @@ public class Patrol : MonoBehaviour
     public float chaseRange = 15f;
     public Transform player;
 
-    private NavMeshAgent agent; // navmeshagent for the AI on the navmesh
-    private float wait = 0f; // time to wait at the patrol points
-    private bool isChasing = false; // chase state flag
+    // Navmeshagent for the AI on the navmesh, time to wait at the patrol points, and chase state flag
+    private NavMeshAgent agent; 
+    private float wait = 0f; 
+    private bool isChasing = false; 
 
-    // player movement script reference
+    // Player movement script reference
     private PlayerMovement playerMovementScript;
 
-    // audio for enemy to play while patroling and chasing
+    // Audio for enemy to play while patroling and chasing
     public AudioClip patrolLoop;
     public AudioClip chaseLoop;
 
@@ -34,13 +35,13 @@ public class Patrol : MonoBehaviour
 
     void Start()
     {
-        // get the navmeshagent
+        // Get the navmeshagent
         agent = GetComponent<NavMeshAgent>();
 
-        // send enemy to a random position at start
+        // Send enemy to a random position at start
         RandomPosition();
 
-        // get reference to player movement script
+        // Get reference to player movement script
         if (player != null)
         {
             playerMovementScript = player.GetComponent<PlayerMovement>();
@@ -51,9 +52,9 @@ public class Patrol : MonoBehaviour
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
 
-        audioSource.spatialBlend = 1f;  // enemy location
+        audioSource.spatialBlend = 1f;  // Enemy location
         audioSource.loop = true;
-        PlayPatrolAudio(); // play patrol by default
+        PlayPatrolAudio(); // Play patrol by default
 
     }
 
@@ -64,7 +65,7 @@ public class Patrol : MonoBehaviour
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // if player is in chase range, chase
+        // If player is in chase range, chase
         if (distanceToPlayer <= chaseRange)
         {
             if (!isChasing)      
@@ -75,7 +76,7 @@ public class Patrol : MonoBehaviour
 
             agent.SetDestination(player.position);
         }
-        // if player moves out of chase range then go back to patrol
+        // If player moves out of chase range then go back to patrol
         else if (isChasing)
         {
             isChasing = false;
@@ -83,7 +84,7 @@ public class Patrol : MonoBehaviour
             RandomPosition();
         }
 
-        // when AI reaches patrol point wait for 2 seconds before moving to the next
+        // When AI reaches patrol point wait for 2 seconds before moving to the next
         if (!isChasing && !agent.pathPending && agent.remainingDistance < 0.5f)
         {
             // Start wait timer
@@ -111,15 +112,15 @@ public class Patrol : MonoBehaviour
                 GameManager.Instance.LoseGame();
             }
 
-            // destroy the player object
+            // Destroy the player object
             Destroy(other.gameObject);
         }
     }
 
-    // kill player
+    // Kill player
     void KillPlayer()
     {
-        // disable the player movement script
+        // Disable the player movement script
         if (playerMovementScript != null)
         {
             playerMovementScript.enabled = false;
@@ -128,29 +129,29 @@ public class Patrol : MonoBehaviour
 
     void RandomPosition()
     {
-        // pick a random location within the Min and Max of X and Z
+        // Pick a random location within the Min and Max of X and Z
         float randomX = Random.Range(minX, maxX);
         float randomZ = Random.Range(minZ, maxZ);
 
-        // keep the NPC at ground level
+        // Keep the NPC at ground level
         Vector3 randomPoint = new Vector3(randomX, transform.position.y, randomZ);
 
-        // make sure the location is on the NavMesh
+        // Make sure the location is on the NavMesh
         NavMeshHit hit;
         if (NavMesh.SamplePosition(randomPoint, out hit, 2f, NavMesh.AllAreas))
         {
-            // move agent to a valid position
+            // Move agent to a valid position
             agent.SetDestination(hit.position);
         }
     }
 
-    // called when a sound is broadcasted either by the player or other objects
+    // Called when a sound is broadcasted either by the player or other objects
     void HearSound(Vector3 soundPosition, float loudness)
     {
         float DistanceToSound = Vector3.Distance(transform.position, soundPosition);
         Debug.Log($"Enemy heard sound! Distance: {DistanceToSound}, Loudness: {loudness}");
 
-        // if sound is in the range of the enemy chase the player
+        // If sound is in the range of the enemy chase the player
         if (DistanceToSound <= loudness)
         {
             if (!isChasing)
@@ -163,18 +164,19 @@ public class Patrol : MonoBehaviour
         }
     }
 
-    // subscribe to the soundevent manager
+    // Subscribe to the soundevent manager
     void OnEnable()
     {
         SoundEventManager.OnSoundMade += HearSound;
     }
 
-    // unsubscribe for the soundevent manager
+    // Unsubscribe for the soundevent manager
     void OnDisable()
     {
         SoundEventManager.OnSoundMade -= HearSound;
     }
 
+    // Play the patrol audio
     void PlayPatrolAudio()
     {
         if (patrolLoop != null)
@@ -185,6 +187,7 @@ public class Patrol : MonoBehaviour
         }
     }
 
+    // Play the chase audio 
     void PlayChaseAudio()
     {
         if (chaseLoop != null)

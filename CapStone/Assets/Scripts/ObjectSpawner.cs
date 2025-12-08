@@ -5,22 +5,22 @@ using UnityEngine.AI;
 
 public class ObjectSpawner : MonoBehaviour
 {
-    // objects
+    // Objects
     public GameObject object1;
     public GameObject object2;
     public GameObject object3;
 
-    // spawn points for each object, theyll have 3 each, define in the inspector
+    // Spawn points for each object, theyll have 3 each, define in the inspector
     public Transform[] spawnPointsObject1;
     public Transform[] spawnPointsObject2;
     public Transform[] spawnPointsObject3;
 
-    // make sure spawn point is withtin the nav mesh
+    // Make sure spawn point is withtin the nav mesh
     public float maxNavMeshDistance = 2f;
 
     void Start()
     {
-        // spawn each object at a random point
+        // Spawn each object at a random point
         SpawnObjectAtRandomPoint(object1, spawnPointsObject1);
         SpawnObjectAtRandomPoint(object2, spawnPointsObject2);
         SpawnObjectAtRandomPoint(object3, spawnPointsObject3);
@@ -28,7 +28,7 @@ public class ObjectSpawner : MonoBehaviour
 
     void SpawnObjectAtRandomPoint(GameObject objPrefab, Transform[] spawnPoints)
     {
-        // make sure one spawn point is choose for each object
+        // Make sure one spawn point is choose for each object
         if (spawnPoints.Length == 0)
         {
             Debug.LogWarning($"No spawn points assigned for {objPrefab.name}");
