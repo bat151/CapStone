@@ -23,6 +23,15 @@ public class Patrol : MonoBehaviour
     // player movement script reference
     private PlayerMovement playerMovementScript;
 
+    // audio for enemy to play while patroling and chasing
+    public AudioClip patrolLoop;
+    public AudioClip chaseLoop;
+
+    public float patrolVolume = 6f;
+    public float chaseVolume = 50f;
+
+    private AudioSource audioSource;
+
     void Start()
     {
         // get the navmeshagent
@@ -36,6 +45,16 @@ public class Patrol : MonoBehaviour
         {
             playerMovementScript = player.GetComponent<PlayerMovement>();
         }
+
+        // AudioSource 
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+
+        audioSource.spatialBlend = 1f;  // enemy location
+        audioSource.loop = true;
+        PlayPatrolAudio(); // play patrol by default
+
     }
 
     void Update()
@@ -48,13 +67,19 @@ public class Patrol : MonoBehaviour
         // if player is in chase range, chase
         if (distanceToPlayer <= chaseRange)
         {
-            isChasing = true;
+            if (!isChasing)      
+            {
+                isChasing = true;
+                PlayChaseAudio();
+            }
+
             agent.SetDestination(player.position);
         }
         // if player moves out of chase range then go back to patrol
         else if (isChasing)
         {
             isChasing = false;
+            PlayPatrolAudio();
             RandomPosition();
         }
 
@@ -128,8 +153,12 @@ public class Patrol : MonoBehaviour
         // if sound is in the range of the enemy chase the player
         if (DistanceToSound <= loudness)
         {
-            // chase player
-            isChasing = true;
+            if (!isChasing)
+            {
+                isChasing = true;
+                PlayChaseAudio();
+            }
+
             agent.SetDestination(player.position);
         }
     }
@@ -144,5 +173,25 @@ public class Patrol : MonoBehaviour
     void OnDisable()
     {
         SoundEventManager.OnSoundMade -= HearSound;
+    }
+
+    void PlayPatrolAudio()
+    {
+        if (patrolLoop != null)
+        {
+            audioSource.volume = patrolVolume;
+            audioSource.clip = patrolLoop;
+            audioSource.Play();
+        }
+    }
+
+    void PlayChaseAudio()
+    {
+        if (chaseLoop != null)
+        {
+            audioSource.volume = chaseVolume;
+            audioSource.clip = chaseLoop;
+            audioSource.Play();
+        }
     }
 }

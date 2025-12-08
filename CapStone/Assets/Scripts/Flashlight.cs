@@ -6,7 +6,24 @@ public class Flashlight : MonoBehaviour
 {
     //Make sure the flashlight is off
     public Light flashlight;
-    private bool On = false;
+    private bool isOn = false;
+
+    // audio for flashlight
+    public AudioClip togglesound;
+    private AudioSource audioSource;
+
+    void Start()
+    {
+        // Get or add AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        // Start with light off
+        flashlight.enabled = false;
+    }
 
     // Update is called once per frame
     void Update()
@@ -21,13 +38,14 @@ public class Flashlight : MonoBehaviour
 
     void ToggleFlashlight()
     {
-        if(flashlight != null)
-        {
-            // change flashlight to on and off
-            On = !On;
+        // Flip flashlight state
+        isOn = !isOn;
+        flashlight.enabled = isOn;
 
-            // enable the actual light component
-            flashlight.enabled = On;
+        // Play toggle sound
+        if (togglesound != null)
+        {
+            audioSource.PlayOneShot(togglesound);
         }
     }
 }

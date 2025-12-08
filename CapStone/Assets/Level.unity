@@ -30898,6 +30898,10 @@ MonoBehaviour:
   waitTime: 2
   chaseRange: 15
   player: {fileID: 1595211465}
+  patrolLoop: {fileID: 8300000, guid: 1ef5918965a9a7d41985696729118364, type: 3}
+  chaseLoop: {fileID: 8300000, guid: 8ac4b18a32b9aeb40a969fcd64852d49, type: 3}
+  patrolVolume: 3
+  chaseVolume: 6
 --- !u!1001 &631730952
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -96254,6 +96258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flashlight: {fileID: 1653906296}
+  togglesound: {fileID: 8300000, guid: 06abedaca28ee584a8f4f971eaed9040, type: 3}
 --- !u!1001 &1976256536
 PrefabInstance:
   m_ObjectHideFlags: 0
